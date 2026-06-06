@@ -138,6 +138,33 @@
       0%, 100% { opacity: 1; }
       50%       { opacity: 0.6; }
     }
+    /* Robot object-query preview: BEV map with candidate indexes overlaid.
+       Small side panel by default (avatar stays visible); click to enlarge. */
+    #object-map {
+      position: absolute;
+      top: 50%; right: 12px;
+      transform: translateY(-50%);
+      max-width: 32%;
+      background: rgba(0,0,0,0.55);
+      padding: 8px;
+      border: 1px solid rgba(233,69,96,0.7);
+      border-radius: 10px;
+      display: none;
+      z-index: 6;
+      text-align: center;
+      cursor: zoom-in;
+      transition: max-width 0.2s ease, background 0.2s ease;
+    }
+    #object-map img { max-width: 100%; max-height: 38vh; border-radius: 6px; opacity: 0.95; }
+    #object-map .caption { font-size: 12px; color: #ddd; padding-top: 5px; }
+    #object-map.zoomed {
+      right: auto; left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 74%;
+      background: rgba(0,0,0,0.85);
+      cursor: zoom-out;
+    }
+    #object-map.zoomed img { max-height: 62vh; opacity: 1; }
   </style>
 
   <script async src="/client/vendor/es-module-shims.js"></script>
@@ -160,6 +187,10 @@
   <video id="selfview" autoplay playsinline muted></video>
   <div id="vision-readout"></div>
   <div id="transcript"></div>
+  <div id="object-map">
+    <img id="object-map-img" alt="candidate objects map" />
+    <div class="caption" id="object-map-caption"></div>
+  </div>
 </div>
 
 <div id="controls">
@@ -183,6 +214,10 @@
   const visionBtn    = document.getElementById('vision');
   const selfviewEl   = document.getElementById('selfview');
   const readoutEl    = document.getElementById('vision-readout');
+  const objMapEl     = document.getElementById('object-map');
+  const objMapImgEl  = document.getElementById('object-map-img');
+  const objMapCapEl  = document.getElementById('object-map-caption');
+  objMapEl.addEventListener('click', () => objMapEl.classList.toggle('zoomed'));
   let t0 = null;
 
   const audioCtx = new AudioContext();
@@ -258,6 +293,20 @@
     if (msg.type === 'vision_result') {
       readoutEl.textContent = '👁 ' + msg.description;
       readoutEl.style.display = 'block';
+      return;
+    }
+
+    if (msg.type === 'object_query_image') {
+      objMapImgEl.src = 'data:image/png;base64,' + msg.image_b64;
+      objMapCapEl.textContent = `🤖 Which ${msg.name}? Say a number from the map · click to enlarge`;
+      objMapEl.classList.remove('zoomed');
+      objMapEl.style.display = 'block';
+      return;
+    }
+
+    if (msg.type === 'object_query_image_clear') {
+      objMapEl.style.display = 'none';
+      objMapImgEl.src = '';
       return;
     }
 

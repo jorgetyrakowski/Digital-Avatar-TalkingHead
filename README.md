@@ -6,9 +6,9 @@ A real-time, bilingual (English / Traditional Chinese) 3D talking avatar powered
 
 | Demo | Link |
 |------|------|
-| English conversation | [YouTube](TODO_LINK_EN) |
-| Chinese conversation (中文對話) | [YouTube](TODO_LINK_ZH) |
-| Robot integration | [YouTube](TODO_LINK_ROBOT) |
+| English conversation | [YouTube](https://youtu.be/tHQHYcrDoNQ) |
+| Chinese conversation (中文對話) | [YouTube](https://youtu.be/Ehv7Wde5eDo) |
+| Robot integration | *coming soon* |
 
 ## Features
 
@@ -20,7 +20,30 @@ A real-time, bilingual (English / Traditional Chinese) 3D talking avatar powered
 - **Robot integration** (optional): natural-language commands are forwarded to a ROS2 robot — see [Robot Integration](#-robot-integration)
 - **Fast**: first spoken words in ~1.5 s after the question (streamed sentence-by-sentence TTS)
 
-## Architecture
+## Pipeline
+
+```
+ 🎤 voice ──► VAD (browser, AudioWorklet RMS) ──► WebSocket ──► Whisper tiny (STT, CPU int8)
+                                                                     │ text
+                                                                     ▼
+                              RAG: multilingual-e5-large embeddings (fastembed, in-process)
+                                   → ChromaDB hybrid search (vector + keyword, top-6)
+                                                                     │ context + question
+                                                                     ▼
+                              vLLM · Gemma4-26B-A4B NVFP4 — streamed token by token
+                                                                     │ split into sentences
+                                                                     │ as they arrive
+                                                                     ▼
+                    TTS per language ──► EN: Kokoro (local) · ZH: Edge / Fish / Kokoro
+                    ZH also gets server-side visemes (hanzi → pinyin → Oculus visemes)
+                                                                     │ WAV + word timings
+                                                                     │ (+ visemes for zh)
+                                                                     ▼
+                    Browser: TalkingHead 3D avatar speaks each sentence with lip-sync
+                    while the next ones are still being generated — first words ~1.5 s
+```
+
+Services layout:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -36,6 +59,20 @@ A real-time, bilingual (English / Traditional Chinese) 3D talking avatar powered
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full pipeline including the robot path, and [DIAGRAM.md](DIAGRAM.md) for component diagrams.
+
+## Models & Inference
+
+| Role | Model | Runtime | Notes |
+|------|-------|---------|-------|
+| **LLM** | [Gemma4-26B-A4B](https://huggingface.co/bg-digitalservices/Gemma-4-26B-A4B-it-NVFP4) (MoE, NVFP4) | **vLLM** — NVIDIA Jetson Thor container, `--quantization modelopt --moe-backend marlin` | **~38 tok/s** decode measured on the Thor; 4096 ctx |
+| LLM (alt) | Qwen3-30B-A3B NVFP4 | same | `./start.sh qwen3` |
+| Embeddings | intfloat/multilingual-e5-large | fastembed (ONNX, in-process) | no embedding server needed |
+| STT | Whisper tiny (int8) | faster-whisper, CPU | bilingual EN/ZH, ~0.5 s per utterance |
+| Vision | SmolVLM2-256M-Video-Instruct | transformers, in-process | one webcam frame every 5 s |
+| TTS (EN) | Kokoro-82M `af_heart` | local | offline-capable |
+| TTS (ZH) | Edge TTS `zh-TW` / Fish Audio / Kokoro `zf_xiaoxiao` | cloud / local | native word timestamps; auto-fallback to Kokoro |
+
+The NVFP4 MoE quantization is what makes a 26B-parameter model interactive on the Jetson: only ~4B parameters are active per token, decoded at ~38 tok/s — faster than the avatar speaks.
 
 ## Requirements
 
@@ -143,7 +180,7 @@ The first Chinese fragment is cut at the first comma so speech starts while the 
 
 The avatar can drive a physical robot: when the user asks for something physical ("bring me the water bottle", "go to the kitchen"), the LLM emits a `[ROBOT: …]` tag that the avatar server converts into a ROS2 message.
 
-🎥 **Demo**: [YouTube](TODO_LINK_ROBOT)
+🎥 **Demo**: *coming soon*
 
 ```
 User ──► Avatar LLM ──► [ROBOT: bring water bottle] detected
@@ -157,7 +194,7 @@ User ──► Avatar LLM ──► [ROBOT: bring water bottle] detected
 
 - The avatar **answers and speaks immediately** while the command is dispatched in parallel — the robot never blocks the conversation
 - Robot → avatar events (task done, object disambiguation questions) flow back through `scripts/robot_bridge.py`, which `start.sh` automatically copies into the robot container and (re)starts — no manual steps
-- Object disambiguation is conversational: the robot asks "which one?", the user answers by voice ("the first one"), and the choice is published back
+- **Visual object disambiguation**: when the robot finds several objects with the same name, it sends a bird's-eye-view map with the candidates' indexes overlaid. The avatar shows it next to the 3D character (click to enlarge), asks *"tell me the number of the one you mean"*, and the user answers **by voice** — the spoken index is validated against the map and published back to `/object_query_reply`
 - Enable with `ROBOT_ENABLED=true` in `.env` (requires the `robotic_agent_system` ROS2 container running)
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full message flow.

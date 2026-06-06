@@ -507,6 +507,23 @@ def parse_option_choice(text: str, option_count: int):
     return None
 
 
+_NUM_WORDS = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+              "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+
+
+def parse_actual_index(text: str, indices: list):
+    """Parse a spoken MAP index against the indexes overlaid on the preview
+    image (they are the robot's real, often non-consecutive indices: 0,2,5,9…).
+    Returns the actual index or None."""
+    text = text.lower()
+    candidates = [int(n) for n in re.findall(r"\d+", text)]
+    candidates += [v for w, v in _NUM_WORDS.items() if w in text]
+    for c in candidates:
+        if c in indices:
+            return c
+    return None
+
+
 async def publish_object_query_reply(request_id: str, index: int):
     """Send the user's object choice to /object_query_reply via docker exec."""
     reply_json = json.dumps({"request_id": request_id, "index": index})
@@ -557,23 +574,47 @@ async def _push_speak(text: str):
             active_connections.discard(ws)
 
 
+async def _broadcast_json(msg: dict):
+    """Send a JSON message to all connected clients."""
+    for ws in list(active_connections):
+        try:
+            await ws.send_json(msg)
+        except Exception:
+            active_connections.discard(ws)
+
+
 async def _handle_object_query_response(user_text: str):
     """Process user's reply to a pending object query."""
     global pending_object_query
     query = pending_object_query
-    position = parse_option_choice(user_text, query["option_count"])
-    if position is not None:
-        pending_object_query = None
-        actual_index = query["indices"][position]
-        print(f"[ROBOT] User chose position {position} → actual index {actual_index} for '{query['name']}'")
-        asyncio.create_task(publish_object_query_reply(query["request_id"], actual_index))
-        await _push_speak(f"Got it — going with option {position + 1}.")
+
+    # With a preview image the ONLY valid answers are the indexes drawn on the
+    # map (often non-consecutive: 0, 2, 5, 9…) — never fall back to positional
+    # interpretation, or "1" would silently become index 0.
+    if query.get("has_image"):
+        actual_index = parse_actual_index(user_text, query["indices"])
+        if actual_index is None:
+            nums = ", ".join(str(i) for i in query["indices"])
+            await _push_speak(f"That number isn't on the map. Choose one of: {nums}.")
+            return
     else:
-        n = query["option_count"]
-        if n == 2:
-            await _push_speak("Sorry, I didn't catch that. Say the first one or the second one.")
-        else:
-            await _push_speak(f"Sorry, I didn't catch that. Say a number from 1 to {n}.")
+        # No image: answer by position ("the first one", "option 2").
+        position = parse_option_choice(user_text, query["option_count"])
+        if position is None:
+            n = query["option_count"]
+            if n == 2:
+                await _push_speak("Sorry, I didn't catch that. Say the first one or the second one.")
+            else:
+                await _push_speak(f"Sorry, I didn't catch that. Say a number from 1 to {n}.")
+            return
+        actual_index = query["indices"][position]
+
+    pending_object_query = None
+    await _broadcast_json({"type": "object_query_image_clear"})
+    print(f"[ROBOT] User chose index {actual_index} for '{query['name']}'")
+    asyncio.create_task(publish_object_query_reply(query["request_id"], actual_index))
+    await _push_speak(f"Got it — going with number {actual_index}."
+                      if query.get("has_image") else "Got it!")
 
 
 async def handle_object_query_choice(data: dict):
@@ -581,6 +622,7 @@ async def handle_object_query_choice(data: dict):
     global pending_object_query
     if data.get("event") == "clear":
         pending_object_query = None
+        await _broadcast_json({"type": "object_query_image_clear"})
         return
     name       = data.get("name", "object")
     options    = data.get("options", [])
@@ -588,12 +630,32 @@ async def handle_object_query_choice(data: dict):
     n = len(options)
     # Store actual index values from each option so we reply with the right index
     indices = [opt.get("index", i) for i, opt in enumerate(options)]
-    pending_object_query = {"request_id": request_id, "name": name, "option_count": n, "indices": indices}
-    if n == 2:
+
+    # BEV preview image: the robot overlays the candidate indexes on a map and
+    # writes the PNG to a volume shared with the host — read it directly.
+    image_b64 = None
+    preview = data.get("preview_image") or {}
+    if preview.get("path"):
+        try:
+            with open(preview["path"], "rb") as f:
+                image_b64 = base64.b64encode(f.read()).decode()
+        except OSError as e:
+            print(f"[ROBOT] preview image unreadable ({preview['path']}): {e}")
+
+    pending_object_query = {"request_id": request_id, "name": name,
+                            "option_count": n, "indices": indices,
+                            "has_image": bool(image_b64)}
+
+    if image_b64:
+        await _broadcast_json({"type": "object_query_image",
+                               "image_b64": image_b64, "name": name})
+        question = (f"I found {n} {name}s. Take a look at the map and "
+                    f"tell me the number of the one you mean.")
+    elif n == 2:
         question = f"I found 2 {name}s. Which one — the first one or the second one?"
     else:
         question = f"I found {n} {name}s. Say a number from 1 to {n} to choose."
-    print(f"[ROBOT] Object query active: {question} (indices: {indices})")
+    print(f"[ROBOT] Object query active: {question} (indices: {indices}, image: {bool(image_b64)})")
     await _push_speak(question)
 
 
