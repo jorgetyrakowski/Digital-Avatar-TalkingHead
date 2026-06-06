@@ -11,11 +11,24 @@ This project builds on the excellent [**TalkingHead**](https://github.com/met4ci
 
 ## 🎥 Demos
 
-| Demo | Link |
-|------|------|
-| English conversation | [YouTube](https://youtu.be/tHQHYcrDoNQ) |
-| Chinese conversation (中文對話) | [YouTube](https://youtu.be/Ehv7Wde5eDo) |
-| Robot integration | *coming soon* |
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://youtu.be/tHQHYcrDoNQ">
+        <img src="https://img.youtube.com/vi/tHQHYcrDoNQ/maxresdefault.jpg" alt="English conversation demo" />
+      </a>
+      <br/><b>▶️ English conversation</b>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://youtu.be/Ehv7Wde5eDo">
+        <img src="https://img.youtube.com/vi/Ehv7Wde5eDo/maxresdefault.jpg" alt="Chinese conversation demo" />
+      </a>
+      <br/><b>▶️ 中文對話 · Chinese conversation</b>
+    </td>
+  </tr>
+</table>
+
+🤖 *Robot integration demo: coming soon*
 
 ## Features
 
