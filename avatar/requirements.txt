@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+httpx
+python-multipart
+faster-whisper
+numpy
+soundfile
+kokoro          # local TTS (EN + ZH)
+misaki[zh]      # Mandarin G2P for kokoro's zh pipeline
+edge-tts        # Microsoft cloud TTS (free) — Taiwan-accented Mandarin voices

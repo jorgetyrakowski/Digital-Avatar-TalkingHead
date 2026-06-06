@@ -1,0 +1,90 @@
+[
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "iRoadSafe 智慧道路安全警示系統 (V2X Solution)",
+      "hierarchy": "ITRI > 智慧交通 > 車聯網技術",
+      "category": "Traffic Safety",
+      "project_name": "iRoadSafe",
+      "content": "「iRoadSafe智慧道路安全警示系統」為國際首套V2X完整系統解決方案，結合WAVE/DSRC車用短距離通訊、微波雷達以及光達，可於縣市路口與高速公路匝道等易肇事路段偵測可能發生碰撞危險，透過RSU (Roadside Unit)路側設備與OBU (Onboard Unit)車載機之間的即時通訊，提供駕駛人行車安全之預警能力。此系統同時搭配電子看板，可提供所有用路人行車安全警示，達到降低車禍肇事率之效果。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "高負載高續航商用無人機 (Heavy-lift Long-endurance UAV)",
+      "hierarchy": "ITRI > 智慧交通 > 無人機技術",
+      "category": "UAV",
+      "project_name": "Commercial UAV",
+      "content": "高負載高續航複合動力無人機可商業應用於：長距離巡檢、基礎設施維護(ex: 礙子清洗)與特殊通訊中繼等應用，2018年完成兩項應用評估，包括輸電網長距離巡檢以及高爾夫球場域的巡檢與植保作業。關鍵模組與整機銷售評估包括:複合動力模組、50kg級工業無人機。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "DeepLook 雲端智慧影像分析系統",
+      "hierarchy": "ITRI > 智慧交通 > AI影像分析",
+      "category": "Video Analytics",
+      "project_name": "DeepLook",
+      "content": "DeepLook-雲端智慧影像分析系統平台技術為可彈性使用資源完成視訊分析之大型「雲端視訊分析平台」，其開放式系統架構及隨插即用分析界面，利用AI人工智慧增加人物、車輛等辨別度，可提供影帶濃縮、車牌辨識以及物件分析等功能，用於台灣警局協助縮短辦案時間並持續擴大建置中。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "瀝青刨除料再利用技術 (RAP Recycling)",
+      "hierarchy": "ITRI > 智慧交通 > 綠色鋪面",
+      "category": "Green Material",
+      "project_name": "Asphalt Recycling",
+      "content": "工研院「瀝青再生劑」可解決瀝青刨除料堆置問題轉而變成道路鋪面資材。一般使用40%瀝青刨除料，再製瀝青混凝土可符合國際抗車轍「漢堡輪跡試驗」標準。本技術可將廢棄物料資源化，創造循環經濟新典範。應用效果或特色: 1.高效率：活化老化瀝青刨除料，降低老化瀝青黏度，提昇新舊瀝青間相容性 2.高品質：改善瀝青延展性與再生瀝青混凝土抗車轍特性 3.高回收：瀝青刨除料再利用比例最高可達100%，並符合國內規範 4.環境永續：瀝青再生技術可減少天然資源使用，並大程度改善環境"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "RAIBA 可動態重組與自我調節電池陣列系統",
+      "hierarchy": "ITRI > 智慧交通 > 能源管理",
+      "category": "Battery System",
+      "project_name": "RAIBA",
+      "content": "「RAIBA可動態重組與自我調節之電池陣列系統」結合線上恆電流開關模組和電池陣列重組演算軟體，是一款具備感知、思考、分析、重組等四大能力的電池系統。此系統具有「可相容異質電池」和「零備援的容錯特性」兩大特點，能於電池系統運轉前和運轉期間即時分析電池陣列，模擬所有可能組合，並選擇最佳配置並快速切換，智慧調控不同電池模組，同時達到滿足負載需求和延長系統運轉時間。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "高能量及高安全樹脂固態電池 (NAEPE)",
+      "hierarchy": "ITRI > 智慧交通 > 電池技術",
+      "category": "Battery Material",
+      "project_name": "NAEPE Solid State Battery",
+      "content": "工研院開發開發網狀聚醯胺環氧樹脂(NAEPE)之固態電解質材料，具有阻燃性、低成本及耐高電壓優點，由商業電解液改質固化得到，保有液態電解液高離子導電和固態電解質的安全性，其中固化過程無須加熱UV光即可進行聚合反應，製程操作容易、設備變異小及成本低廉，聚合因體積膨脹也可降低電解液使用量，在銅箔、隔膜追求薄型化下，電解液若使用量減少，可大幅有效增加電池重量能量密度，可應用於下世代高能量密度動力鋰電池改善安全性。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "大眾交通工具之變頻空調系統關鍵組件",
+      "hierarchy": "ITRI > 智慧交通 > 車輛零組件",
+      "category": "Vehicle Component",
+      "project_name": "Inverter AC System",
+      "content": "工研院整合業界聯盟，共同開發體積/重量皆減少30%之變速三合一渦卷壓縮機、變速風扇、變冷媒流量與變風量之大眾交通工具用的智能化空調系統等。(1). DC變速三合一渦卷壓縮機：臥式(相比立式高度降低50%、體積減少30%)、全鋁合金(重量減少50%)、內置變頻器(多電源輸入/單電源輸出)；全載COP≥2.88、部分負載COP≧4.25。(2). 變速風扇模組：高效率、高耐靜壓翼型外轉子DC風扇搭配電力轉換控制模組，適合應用於大眾運輸空調系統；性能高、耗電低為工研院自主技術開發，性能超越國際大廠。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "電信操控無人機隊解決方案 (LTE/4G Drone Fleet)",
+      "hierarchy": "ITRI > 智慧交通 > 無人機技術",
+      "category": "UAV System",
+      "project_name": "Drone Fleet Solution",
+      "content": "電信操控無人機隊解決方案由無人機地面控制站、無人機自動充電站和多旋翼無人機群等組成，含多鏈路遠程遙控技術和4G/LTE即時影像串流技術，實現全自動化的高效空中巡邏與維安監控功能，為台灣第一個自動化警用無人機隊巡邏系統，增加巡邏頻率、縮短單次巡邏時間，大幅提高警務效率與反恐能力。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "車聯網與自動駕駛解決方案 (Autonomous Driving & C-V2X)",
+      "hierarchy": "ITRI > 智慧交通 > 自駕技術",
+      "category": "Autonomous Vehicle",
+      "project_name": "ITRI ADV",
+      "content": "ITRI ADV為國內首部自動駕駛中型巴士，搭載自主研發之環周感知次系統(Surrounding Sensing Subsystem, S3)，並整合C-V2X(PC5)/V2X(DSRC)智慧路側系統與自駕營運管理平台，提供市區開放道路自動接駁能力。已於新竹縣竹北市區進行實證運行，第一年提供新竹高鐵往返喜來登飯店之自駕接駁服務，第二年將服務延伸至國際AI智慧園區；並曾於2019年榮獲杜拜全球自駕運輸挑戰賽新創組第二名。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "電動機車馬達驅動器 (High Power Density Inverter)",
+      "hierarchy": "ITRI > 智慧交通 > 電動載具",
+      "category": "EV Component",
+      "project_name": "E-Scooter Power Module",
+      "content": "在國際推動節能減碳的趨勢下，各國政府紛紛提出車輛電動化的產業政策。機車雖帶給人移動上的便捷，傳統燃油機車也相對造成環境污染的隱憂。以模組化高階封裝技術(System-in-package)所開發的電動機車整合型功率模組，是世界首個>8KW高功率密度(High Power Density)電動機車功率模組，其整合逆變器(Inverter)與整流器(Rectifier)，且具電流傳感(current sensor)、減少切換損失(reduced switching losses)與溫度感測(temperature sensor)之功能，高密度整合封裝技術使功率密度比傳統離散式功率模組高三倍，此外，採用高絕緣高散熱基板，實現穩定度及安全性。高客製化及整合性，可隨終端使用者需求結合控制器的設計及製作，於多而複雜的龐大機車零組件售後市場(AM Market)中，提供維修簡易且降低故障頻率的成本優勢。"
+    },
+    {
+      "source": "ITRI_Smart_Transport",
+      "title": "具飛輪之微型電動車快充系統 (Flywheel Fast Charging)",
+      "hierarchy": "ITRI > 智慧交通 > 能源管理",
+      "category": "Charging Infrastructure",
+      "project_name": "Flywheel Charger",
+      "content": "具飛輪之微型電動車快充系統於功率密度上數倍於一般電池，可進行安全無放電深度限制的電動車充電，小型化可攜式並具高度模組化之潛力。"
+    }
+  ]

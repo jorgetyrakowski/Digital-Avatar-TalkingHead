@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>ITRI Digital Avatar — TalkingHead POC</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #avatar-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #avatar { width: 100%; height: 100%; display: block; }
+    #status {
+      position: absolute;
+      top: 12px; left: 12px;
+      font-size: 13px;
+      color: #aaa;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    #timing {
+      position: absolute;
+      top: 12px; right: 12px;
+      font-size: 12px;
+      font-family: monospace;
+      background: rgba(0,0,0,0.6);
+      padding: 8px 12px;
+      border-radius: 8px;
+      line-height: 1.8;
+      display: none;
+    }
+    #timing .highlight { color: #e94560; font-weight: bold; }
+    #transcript {
+      position: absolute;
+      bottom: 12px; left: 12px; right: 12px;
+      text-align: center;
+      font-size: 15px;
+      color: #eee;
+      background: rgba(0,0,0,0.6);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: none;
+      line-height: 1.5;
+    }
+    #controls {
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      background: #16213e;
+      border-top: 1px solid #0f3460;
+    }
+    #input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #0f3460;
+      background: #0f3460;
+      color: white;
+      outline: none;
+    }
+    #input:focus { border-color: #e94560; }
+    #send {
+      padding: 10px 22px;
+      background: #e94560;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: opacity 0.2s;
+    }
+    #send:disabled { opacity: 0.4; cursor: not-allowed; }
+    #mic {
+      padding: 10px 16px;
+      background: #0f3460;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    #mic.listening {
+      background: #e94560;
+      border-color: #e94560;
+      animation: pulse 1s infinite;
+    }
+    #mic.speaking { background: #f59e0b; border-color: #f59e0b; }
+    #mic:disabled { opacity: 0.4; cursor: not-allowed; }
+    #vision {
+      padding: 10px 16px;
+      background: #0f3460;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    #vision.active { background: #22c55e; border-color: #22c55e; }
+    #vision:disabled { opacity: 0.4; cursor: not-allowed; }
+    #selfview {
+      position: absolute;
+      bottom: 64px; right: 12px;
+      width: 160px;
+      border-radius: 8px;
+      border: 2px solid #22c55e;
+      display: none;
+      z-index: 5;
+      transform: scaleX(-1); /* mirror, like a selfie */
+    }
+    #vision-readout {
+      position: absolute;
+      bottom: 64px; right: 182px;
+      max-width: 220px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #bdf;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 8px;
+      border-radius: 6px;
+      white-space: pre-line;
+      display: none;
+      z-index: 5;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.6; }
+    }
+  </style>
+
+  <script async src="/client/vendor/es-module-shims.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "/client/vendor/three/three.module.js",
+      "three/addons/": "/client/vendor/three/examples/jsm/",
+      "talkinghead": "/client/vendor/talkinghead/talkinghead.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+
+<div id="avatar-container">
+  <div id="avatar"></div>
+  <div id="status">Connecting...</div>
+  <div id="timing"></div>
+  <video id="selfview" autoplay playsinline muted></video>
+  <div id="vision-readout"></div>
+  <div id="transcript"></div>
+</div>
+
+<div id="controls">
+  <input id="input" type="text" placeholder="Ask something... (e.g. 工研院是什麼？)" />
+  <button id="mic" disabled>🎤</button>
+  <button id="vision" disabled title="Vision mode — let the avatar see you">👁</button>
+  <button id="send" disabled>Send</button>
+</div>
+
+<script type="module">
+  import { TalkingHead } from "talkinghead";
+
+  const AVATAR_URL = '/client/avatars/brunette.glb';
+
+  const statusEl     = document.getElementById('status');
+  const transcriptEl = document.getElementById('transcript');
+  const timingEl     = document.getElementById('timing');
+  const inputEl      = document.getElementById('input');
+  const sendBtn      = document.getElementById('send');
+  const micBtn       = document.getElementById('mic');
+  const visionBtn    = document.getElementById('vision');
+  const selfviewEl   = document.getElementById('selfview');
+  const readoutEl    = document.getElementById('vision-readout');
+  let t0 = null;
+
+  const audioCtx = new AudioContext();
+
+  // --- TalkingHead setup ---
+  const head = new TalkingHead(document.getElementById('avatar'), {
+    ttsEndpoint:    null,
+    lipsyncModules: ['en'],
+    cameraView:     'upper',
+  });
+
+  statusEl.textContent = 'Loading avatar...';
+  try {
+    await head.showAvatar({
+      url:         AVATAR_URL,
+      body:        'M',
+      avatarMood:  'neutral',
+      lipsyncLang: 'en',
+    });
+    statusEl.textContent = 'Avatar ready';
+  } catch (err) {
+    statusEl.textContent = 'Avatar load error: ' + err.message;
+    console.error(err);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    document.visibilityState === 'visible' ? head.start() : head.stop();
+  });
+
+  // --- WebSocket ---
+  const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const ws = new WebSocket(`${wsProto}//${location.host}/ws`);
+
+  ws.onopen = () => {
+    statusEl.textContent = 'Ready';
+    sendBtn.disabled = false;
+    micBtn.disabled = false;
+    visionBtn.disabled = false;
+  };
+
+  ws.onclose = () => {
+    statusEl.textContent = 'Disconnected';
+    sendBtn.disabled = true;
+    micBtn.disabled = true;
+    visionBtn.disabled = true;
+    stopVision();
+  };
+
+  ws.onerror = (e) => {
+    statusEl.textContent = 'WebSocket error';
+    console.error(e);
+  };
+
+  ws.onmessage = async (event) => {
+    const msg = JSON.parse(event.data);
+
+    if (msg.type === 'status') {
+      statusEl.textContent = msg.message;
+      return;
+    }
+
+    if (msg.type === 'transcript') {
+      inputEl.value = msg.text;
+      t0 = Date.now();  // T_speak counts from "voice transcribed", STT excluded
+      return;
+    }
+
+    if (msg.type === 'vision_status') {
+      statusEl.textContent = msg.message;
+      return;
+    }
+
+    if (msg.type === 'vision_result') {
+      readoutEl.textContent = '👁 ' + msg.description;
+      readoutEl.style.display = 'block';
+      return;
+    }
+
+    if (msg.type === 'speak') {
+      if (msg.timing) {
+        const t_client = t0 ? ((Date.now() - t0) / 1000).toFixed(3) : '—';
+        const tm = msg.timing;
+        const ok = parseFloat(t_client) < 2.0;
+        timingEl.innerHTML =
+          `LLM 1st sentence: ${tm.t_llm}s<br>` +
+          `TTS:              ${tm.t_tts}s<br>` +
+          `────────────────────<br>` +
+          `T_speak: <span class="${ok ? '' : 'highlight'}">${t_client}s</span>` +
+          ` ${ok ? '✓ &lt;2s' : '✗ &gt;2s'}`;
+        timingEl.style.display = 'block';
+      }
+
+      if (msg.clear || transcriptEl.style.display === 'none') {
+        transcriptEl.textContent = msg.text;
+      } else {
+        transcriptEl.textContent += msg.text;
+      }
+      transcriptEl.style.display = 'block';
+
+      const binary = atob(msg.audio_b64);
+      const bytes  = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const audioBuffer = await audioCtx.decodeAudioData(bytes.buffer.slice(0));
+
+      const speech = {
+        audio:      audioBuffer,
+        words:      msg.words,
+        wtimes:     msg.wtimes,
+        wdurations: msg.wdurations,
+      };
+      // Chinese: the server precomputes Oculus visemes (no lipsync-zh module
+      // exists) — when present, speakAudio uses them instead of word rules.
+      if (msg.visemes) {
+        speech.visemes    = msg.visemes;
+        speech.vtimes     = msg.vtimes;
+        speech.vdurations = msg.vdurations;
+      }
+      head.speakAudio(speech);
+    }
+
+    if (msg.type === 'done') {
+      sendBtn.disabled = false;
+      micBtn.disabled = false;
+      if (isListening) {
+        micBtn.classList.remove('speaking');
+        micBtn.classList.add('listening');
+        statusEl.textContent = 'Listening...';
+        resetVADState();
+      } else {
+        statusEl.textContent = 'Ready';
+      }
+    }
+  };
+
+  // --- Send text message ---
+  function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text || ws.readyState !== WebSocket.OPEN) return;
+    sendBtn.disabled = true;
+    micBtn.disabled = true;
+    t0 = Date.now();
+    transcriptEl.style.display = 'none';
+    timingEl.style.display = 'none';
+    statusEl.textContent = 'Processing...';
+    ws.send(text);
+    inputEl.value = '';
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  inputEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+  // --- Microphone / VAD ---
+  const SAMPLE_RATE       = 16000;
+  const ENERGY_THRESHOLD  = 0.015;
+  const SILENCE_FRAMES    = Math.floor(1.5 * SAMPLE_RATE / 1024); // ~23 frames = 1.5s silence
+  const MIN_SPEECH_FRAMES = Math.floor(0.4 * SAMPLE_RATE / 1024); //  ~6 frames = 0.4s min
+
+  let isListening    = false;
+  let micAudioCtx    = null;
+  let mediaStream    = null;
+  let vadWorkletNode = null;
+  let vadBuffer      = [];
+  let speechFrames   = 0;
+  let silenceFrames  = 0;
+  let isInSpeech     = false;
+
+  const VAD_WORKLET = `
+    class VadProcessor extends AudioWorkletProcessor {
+      constructor() { super(); this.buf = new Float32Array(1024); this.idx = 0; }
+      process(inputs) {
+        const ch = inputs[0][0];
+        if (!ch) return true;
+        for (let i = 0; i < ch.length; i++) {
+          this.buf[this.idx++] = ch[i];
+          if (this.idx >= 1024) {
+            let s = 0;
+            for (let j = 0; j < 1024; j++) s += this.buf[j] * this.buf[j];
+            this.port.postMessage({ energy: Math.sqrt(s / 1024), audio: this.buf.slice() });
+            this.idx = 0;
+          }
+        }
+        return true;
+      }
+    }
+    registerProcessor('vad-processor', VadProcessor);
+  `;
+
+  function resetVADState() {
+    vadBuffer = []; speechFrames = 0; silenceFrames = 0; isInSpeech = false;
+  }
+
+  function sendAudio() {
+    if (ws.readyState !== WebSocket.OPEN || vadBuffer.length === 0) return;
+
+    const total    = vadBuffer.reduce((s, b) => s + b.length, 0);
+    const combined = new Float32Array(total);
+    let offset = 0;
+    for (const b of vadBuffer) { combined.set(b, offset); offset += b.length; }
+
+    const int16 = new Int16Array(combined.length);
+    for (let i = 0; i < combined.length; i++) {
+      int16[i] = Math.max(-32768, Math.min(32767, combined[i] * 32767));
+    }
+
+    sendBtn.disabled = true;
+    micBtn.disabled = true;
+    micBtn.classList.remove('listening');
+    micBtn.classList.add('speaking');
+    t0 = Date.now();
+    transcriptEl.style.display = 'none';
+    timingEl.style.display = 'none';
+
+    ws.send(int16.buffer);
+    resetVADState();
+  }
+
+  function handleVADMessage({ data: { energy, audio } }) {
+    vadBuffer.push(new Float32Array(audio));
+
+    // Trim pre-speech buffer so we don't send excessive leading silence
+    if (!isInSpeech && vadBuffer.length > SILENCE_FRAMES * 2) {
+      vadBuffer = vadBuffer.slice(-SILENCE_FRAMES);
+    }
+
+    if (energy > ENERGY_THRESHOLD) {
+      if (!isInSpeech) {
+        isInSpeech = true;
+        statusEl.textContent = 'Speaking...';
+      }
+      speechFrames++;
+      silenceFrames = 0;
+    } else if (isInSpeech) {
+      silenceFrames++;
+      if (silenceFrames >= SILENCE_FRAMES && speechFrames >= MIN_SPEECH_FRAMES) {
+        sendAudio();
+      }
+    }
+  }
+
+  async function startMic() {
+    micAudioCtx = new AudioContext({ sampleRate: SAMPLE_RATE });
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      audio: { sampleRate: SAMPLE_RATE, channelCount: 1, echoCancellation: true, noiseSuppression: true }
+    });
+
+    const blob = new Blob([VAD_WORKLET], { type: 'application/javascript' });
+    const url  = URL.createObjectURL(blob);
+    await micAudioCtx.audioWorklet.addModule(url);
+    URL.revokeObjectURL(url);
+
+    const source = micAudioCtx.createMediaStreamSource(mediaStream);
+    vadWorkletNode = new AudioWorkletNode(micAudioCtx, 'vad-processor');
+    vadWorkletNode.port.onmessage = handleVADMessage;
+    source.connect(vadWorkletNode);
+
+    isListening = true;
+    micBtn.classList.add('listening');
+    statusEl.textContent = 'Listening...';
+    resetVADState();
+  }
+
+  function stopMic() {
+    if (vadWorkletNode) { vadWorkletNode.disconnect(); vadWorkletNode = null; }
+    if (mediaStream)    { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+    if (micAudioCtx)    { micAudioCtx.close(); micAudioCtx = null; }
+    isListening = false;
+    micBtn.classList.remove('listening', 'speaking');
+    statusEl.textContent = 'Ready';
+    resetVADState();
+  }
+
+  micBtn.addEventListener('click', async () => {
+    if (isListening) {
+      stopMic();
+    } else {
+      try {
+        await startMic();
+      } catch (err) {
+        statusEl.textContent = 'Mic error: ' + err.message;
+        console.error(err);
+      }
+    }
+  });
+
+  // --- Vision mode (webcam → server SmolVLM) ---
+  const VISION_CAPTURE_MS = 5000;   // grab a frame every 5s while vision is on
+  let visionOn     = false;
+  let visionStream = null;
+  let visionTimer  = null;
+
+  function captureFrame() {
+    if (!visionStream || ws.readyState !== WebSocket.OPEN) return;
+    if (!selfviewEl.videoWidth) return;  // camera not warmed up yet
+    const w = 320;
+    const h = Math.round(selfviewEl.videoHeight * w / selfviewEl.videoWidth);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(selfviewEl, 0, 0, w, h);
+    const b64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+    ws.send(JSON.stringify({ type: 'vision_frame', image: b64 }));
+  }
+
+  async function startVision() {
+    visionStream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 640, height: 480 }
+    });
+    selfviewEl.srcObject = visionStream;
+    selfviewEl.style.display = 'block';
+    visionOn = true;
+    visionBtn.classList.add('active');
+    ws.send(JSON.stringify({ type: 'vision_toggle', enabled: true }));
+    setTimeout(captureFrame, 1500);                 // first read shortly after start
+    visionTimer = setInterval(captureFrame, VISION_CAPTURE_MS);
+  }
+
+  function stopVision() {
+    if (visionTimer)  { clearInterval(visionTimer); visionTimer = null; }
+    if (visionStream) { visionStream.getTracks().forEach(t => t.stop()); visionStream = null; }
+    selfviewEl.style.display = 'none';
+    readoutEl.style.display = 'none';
+    if (visionOn && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'vision_toggle', enabled: false }));
+    }
+    visionOn = false;
+    visionBtn.classList.remove('active');
+  }
+
+  visionBtn.addEventListener('click', async () => {
+    if (visionOn) {
+      stopVision();
+    } else {
+      try {
+        await startVision();
+      } catch (err) {
+        statusEl.textContent = 'Camera error: ' + err.message;
+        console.error(err);
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

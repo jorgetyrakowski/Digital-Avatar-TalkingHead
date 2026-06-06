@@ -1,0 +1,114 @@
+[
+    {
+      "source": "ITRI_Glossary",
+      "term": "IEK",
+      "full_name": "Industrial Economics and Knowledge Center (產業經濟與趨勢研究中心)",
+      "category": "Organization",
+      "hierarchy": "ITRI > 詞彙表 > 組織",
+      "content": "IEK 是工研院著名的產業智庫品牌，現已改制為「產業科技國際策略發展所 (ISTI)」。它專門提供國內外市場趨勢分析、技術前瞻研究與產業策略建議。在產業界，「IEK報告」通常被視為最具權威的市場情報來源之一。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "ISTI",
+      "full_name": "Industry, Science and Technology International Strategy Center (產業科技國際策略發展所)",
+      "category": "Organization",
+      "hierarchy": "ITRI > 詞彙表 > 組織",
+      "content": "ISTI 是工研院負責國際策略與產業分析的核心單位（前身為 IEK）。除了延續產業情報分析外，ISTI 更強化了「國際鏈結」的功能，協助台灣產業對接全球創新聚落，並為政府提供科技政策的幕僚建議。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "OISP",
+      "full_name": "Open Innovation System Platform (開放式創新系統平台)",
+      "category": "Strategy",
+      "hierarchy": "ITRI > 詞彙表 > 策略",
+      "content": "OISP 是工研院推動跨領域研發的重要策略機制。打破過去各研究所單打獨鬥的模式，OISP 強調將不同領域的技術（例如：材料 + 光電 + 資通訊）整合在同一個平台上，以解決產業界日益複雜的系統性問題，加速技術商業化的速度。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "STOBA",
+      "full_name": "Self-Terminated Oligomers with Hyper-Branched Architecture (高安全性鋰電池材料)",
+      "category": "Technology",
+      "hierarchy": "ITRI > 詞彙表 > 技術",
+      "content": "STOBA 是工研院獨家研發的鋰電池安全材料技術，曾獲 R&D 100 大獎。它是一種奈米級的高分子材料，當電池溫度異常升高時，STOBA 會形成薄膜阻斷離子流動，防止電池熱失控或爆炸，被視為電動車與儲能系統的關鍵安全技術。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "Open Lab",
+      "full_name": "Open Laboratory (開放實驗室)",
+      "category": "Facility",
+      "hierarchy": "ITRI > 詞彙表 > 設施",
+      "content": "Open Lab 是工研院於1996年首創的合作模式。它允許外部企業進駐工研院院區，直接使用工研院的精密設備與實驗室資源，並與院內研究人員近距離合作。這種模式大幅降低了中小企業的研發門檻，加速了新產品的上市時間。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "ITIC",
+      "full_name": "Industrial Technology Investment Corporation (創新工業技術移轉股份有限公司)",
+      "category": "Organization",
+      "hierarchy": "ITRI > 詞彙表 > 投資",
+      "content": "ITIC 是工研院全資持有的創投機構，扮演「科技創投」的角色。它專門投資具有潛力的科技新創公司（Startups）以及工研院的衍生公司（Spin-offs），協助將實驗室的技術成果轉化為具備市場競爭力的商業實體。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "Spin-off",
+      "full_name": "Derivative Company (衍生公司)",
+      "category": "Business Model",
+      "hierarchy": "ITRI > 詞彙表 > 商業模式",
+      "content": "Spin-off 是工研院最著名的技術移轉模式。指將實驗室中已成熟的技術團隊與專利資產獨立出來，成立一家新的公司。台灣著名的科技巨頭如台積電 (TSMC)、聯電 (UMC)、台灣光罩、盟立自動化等，皆是源自工研院的 Spin-off。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "RCA Project",
+      "full_name": "RCA Technology Transfer Project (RCA技術移轉計畫)",
+      "category": "History",
+      "hierarchy": "ITRI > 詞彙表 > 歷史",
+      "content": "RCA 計畫是1976年台灣積體電路發展的關鍵轉捩點。工研院選派一群年輕工程師前往美國無線電公司 (RCA) 學習半導體設計與製造技術。這群歸國人才後來成為台灣半導體產業的種子部隊，該計畫因此被視為台灣科技史上最成功的技術移轉案例。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "2035 Strategy",
+      "full_name": "2035 Technology Strategy & Roadmap (2035技術策略與藍圖)",
+      "category": "Strategy",
+      "hierarchy": "ITRI > 詞彙表 > 策略",
+      "content": "這是工研院目前的最高指導方針。它定義了工研院未來的研發方向聚焦於四大應用領域：「智慧生活」、「健康樂活」、「永續環境」、「韌性社會」，並以「智慧化致能技術」（AI、半導體、通訊、資安）作為支撐，目的是用科技解決未來社會可能面臨的重大挑戰。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "R&D 100 Awards",
+      "full_name": "R&D 100 Awards (全球百大科技研發獎)",
+      "category": "Award",
+      "hierarchy": "ITRI > 詞彙表 > 獎項",
+      "content": "R&D 100 Awards 被譽為「研發界的奧斯卡獎」，由美國 R&D World 雜誌主辦。工研院已連續十餘年獲獎，獲獎技術包括 STOBA 電池、i2R 電子紙等。這代表工研院的技術不僅具備學術價值，更具有高度的市場應用潛力與全球競爭力。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "cGMP",
+      "full_name": "Current Good Manufacturing Practice (現行優良藥品製造標準)",
+      "category": "Standard",
+      "hierarchy": "ITRI > 詞彙表 > 標準",
+      "content": "在工研院的歷史脈絡中，cGMP 常指涉其建置的「中草藥試驗工廠」或生醫相關設施。工研院協助建立了符合國際 cGMP 標準的試量產線，幫助台灣生技與製藥業者進行產品驗證，跨越從實驗室到量產的法規門檻。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "Shalun",
+      "full_name": "Shalun Smart Green Energy Science City (沙崙智慧綠能科學城)",
+      "category": "Location",
+      "hierarchy": "ITRI > 詞彙表 > 地點",
+      "content": "沙崙位於台南，是工研院南分院的重要據點之一，也是台灣綠能科技的示範場域。工研院在此設有綠能科技示範場域，專注於太陽能、風力發電、儲能系統與智慧電網的技術驗證與試量產。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "REDDEX",
+      "full_name": "Environmentally Friendly Fire Resistant Material (環保防火耐燃材料)",
+      "category": "Technology",
+      "hierarchy": "ITRI > 詞彙表 > 技術",
+      "content": "REDDEX 是工研院研發的一種無鹵素環保防火材料，曾獲 R&D 100 大獎。它在火災發生時會迅速碳化形成保護層，阻絕熱源與氧氣，可廣泛應用於建築塗料與電子產品外殼，是工研院材化所的代表性技術之一。"
+    },
+    {
+      "source": "ITRI_Glossary",
+      "term": "Co-creation",
+      "full_name": "Co-creation Model (共創模式)",
+      "category": "Strategy",
+      "hierarchy": "ITRI > 詞彙表 > 策略",
+      "content": "共創是工研院近年來推動的新型態合作模式。不同於單純的技術移轉（賣技術），共創模式強調工研院與廠商從研發初期就共同投入資源、共同承擔風險並共享成果。這種模式能讓技術研發更貼近市場的真實需求。"
+    }
+  ]

@@ -1,0 +1,159 @@
+[
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院總部 - 中興院區 (Hsinchu Headquarters)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 新竹",
+    "category": "Headquarters",
+    "region": "Domestic",
+    "content": "工研院總部設於「中興院區」，地址為新竹縣竹東鎮中興路四段195號。這裡是工研院的核心行政與研發樞紐，匯集了多數核心實驗室與行政單位。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院光復院區 (Guangfu Campus)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 新竹",
+    "category": "Campus",
+    "region": "Domestic",
+    "content": "工研院「光復院區」位於新竹市光復路二段321號，緊鄰國立清華大學與陽明交通大學。此院區是台灣早期半導體研發的重要發源地，目前仍有多個重要實驗室進駐。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院台北辦事處 (Taipei Office)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 台北",
+    "category": "Office",
+    "region": "Domestic",
+    "content": "工研院「台北辦事處」位於臺北市和平東路二段106號7樓（科技大樓）。主要功能為負責與中央政府機關的聯繫協調，以及服務北部地區的產學研合作夥伴。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院中分院 (Central Region Campus)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 南投",
+    "category": "Campus",
+    "region": "Domestic",
+    "content": "工研院「中分院」位於南投縣南投市文獻路2號（中興新村）。該院區聚焦於「智慧機械」與「溫室科技」研發，結合中部精機產業聚落優勢，帶動中部產業升級發展。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院南分院 (Southern Region Campus)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 台南",
+    "category": "Campus",
+    "region": "Domestic",
+    "content": "工研院「南分院」位於臺南市六甲區工研路8號。此院區設有雷射光谷育成暨試量產工場，專注於雷射加工、3D 列印（積層製造）及綠色製程技術的研發與應用。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "南臺灣創新園區 (STIR)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 台南",
+    "category": "Campus",
+    "region": "Domestic",
+    "content": "「南臺灣創新園區」位於臺南市安南區工業二路31號（臺南科技工業區）。作為工研院在南部的創新孵化基地，協助南部產業進行數位轉型與技術升級。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "沙崙綠能科技示範場域 (Shalun Green Energy Technology Demonstration Site)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 台南",
+    "category": "Demonstration Site",
+    "region": "Domestic",
+    "content": "「沙崙綠能科技示範場域」位於臺南市歸仁區高發二路360號（鄰近高鐵台南站）。這是台灣國家級的綠能科技驗證核心，擁有完整的太陽能、風力發電、氫能與儲能系統測試場域。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "產業服務中心 - 地熱發電單一服務窗口",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 台北",
+    "category": "Service Center",
+    "region": "Domestic",
+    "content": "工研院「地熱發電單一服務窗口」位於臺北市松山區八德路二段400號4F-1。該窗口專門為推動再生能源發展而設，提供地熱相關技術諮詢、法規輔導與行政協助。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "產業服務中心 - 亞灣 5G AIoT 創新園區",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 高雄",
+    "category": "Service Center",
+    "region": "Domestic",
+    "content": "工研院「亞灣 5G AIoT 創新園區辦公室」位於高雄市前鎮區成功二路25號10樓。此據點致力於推動南部 5G 專網、人工智慧物聯網及沉浸式科技產業聚落。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "產業服務中心 - 花蓮與台中辦公室",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 其他",
+    "category": "Service Center",
+    "region": "Domestic",
+    "content": "工研院「台中辦公室」位於臺中市大雅區中科路6號8樓，工研院「花蓮辦公室」位於花蓮市精美路18號。設立這些據點旨在就近服務在地產業，提供即時的技術支援。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院北美公司 (ITRI International Inc.) - 簡介與任務",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 北美",
+    "category": "International Office",
+    "region": "North America",
+    "content": "工研院北美公司位於加州聖荷西（矽谷），是工研院的子公司。其任務是作為台灣與美洲的科技橋樑，從事創業育成、委託研究及技術移轉。利用矽谷的地緣優勢，連結當地創新聚落、創投與頂尖大學。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院北美公司 - 服務內容與聯絡資訊",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 北美",
+    "category": "Service",
+    "region": "North America",
+    "content": "北美公司自2006年起已培育超過30家矽谷新創。提供服務包含：1. 創業加速（連結工研院創新公司 ITIC）；2. 研發合作（促成台美共同研究計畫）；3. 人才延攬（執行菁英計畫）。地址：2880 Zanker Rd., Suite 103, San Jose, CA 95134, USA。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院日本辦公室 (ITRI Japan Office) - 簡介與任務",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 日本",
+    "category": "International Office",
+    "region": "Asia",
+    "content": "工研院日本辦公室於1987年成立，位於東京都港區。主要任務是建構「台日科技創新研發平台」，促進雙邊產官學研的交流、技術移轉及投資合作。地址：東京都港區三田1-2-18 TTD大樓 3F。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院日本辦公室 - 近期重要活動 (2023)",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 日本",
+    "category": "Events",
+    "region": "Asia",
+    "content": "2023年日本辦公室活動頻繁：5月胡竹生副院長拜訪 DENSO 並簽署車用半導體合作 MOU；11月於東京舉辦工研院50周年慶祝活動；同月與東京工業大學簽署半導體與淨零排放合作協定，並舉辦第九屆 AIST-ITRI 共同研討會。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院歐洲辦公室 (ITRI Europe Office)",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 歐洲",
+    "category": "International Office",
+    "region": "Europe",
+    "content": "工研院歐洲辦公室於1996年成立，位於德國柏林。其角色為台灣參與歐盟科研計畫（如 Horizon Europe）的窗口（SME-NCP），協助台灣產研機構融入歐洲創新體系。地址：Hohenzollerndamm 187, 7. OG., 10713 Berlin, Germany。電話：+49-30-8609-3611。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院東南亞辦公室 (ITRI Southeast Asia Office)",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 東南亞",
+    "category": "International Office",
+    "region": "Asia",
+    "content": "工研院東南亞辦公室於2024年2月28日在泰國曼谷正式成立。因應全球供應鏈重組，該辦公室旨在協助台商佈局東南亞，聚焦淨零排放、智慧製造與智慧醫療領域。地址位於曼谷 Exchange Tower。電話：+66-02-104-9105。"
+  },
+  {
+    "source": "ITRI_Locations",
+    "title": "工研院英國辦公室 (ITRI UK Office)",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 英國",
+    "category": "International Office",
+    "region": "Europe",
+    "content": "工研院英國辦公室於2025年在倫敦正式成立。這是工研院擴展歐洲佈局的策略性舉措，旨在結合英國在基礎科學與綠色經濟的優勢，與台灣的應用技術互補。地址：6 Bevis Marks, London EC3A 7BA。聯絡人：周瑞貞組長。"
+  },
+  {
+    "source": "ITRI_Location_Summary",
+    "title": "工研院全球服務據點總覽 (Domestic & Global Network)",
+    "hierarchy": "ITRI > 全球據點 > 總覽",
+    "category": "Location Summary",
+    "content": "工業技術研究院（ITRI）為了鏈結全球創新資源並深耕在地產業服務，建構了綿密且功能完整的全球研發網絡。截至2025年，工研院的版圖橫跨台灣北、中、南、東四大區域，並延伸至北美、歐洲、亞洲等關鍵科技聚落。\n\n在國內，以新竹「中興院區」與「光復院區」為雙核心總部，串聯台北辦事處、南投「中分院」、台南「南分院」與「六甲院區」、位於台南歸仁的國家級「沙崙綠能科技示範場域」，以及高雄「亞灣 5G AIoT 創新園區」。此外，透過產業服務中心在台中、花蓮等地設立駐點，實現「在地服務、即時解題」的目標。\n\n在國際佈局上，工研院設有五大海外戰略據點，分別針對不同區域的優勢進行對接：1. 北美公司（矽谷）：聚焦新創育成與前瞻技術合作。2. 日本辦公室（東京）：深耕精密機械與材料技術移轉。3. 歐洲辦公室（柏林）：連結歐盟科研計畫與工業 4.0 資源。4. 東南亞辦公室（曼谷）：2024年成立，協助台商供應鏈韌性與淨零轉型。5. 英國辦公室（倫敦）：2025年成立，鎖定基礎科學與綠色金融合作。這些據點共同構成了工研院作為「世界級研發機構」的堅實骨幹。"
+  },
+  {
+    "source": "ITRI_Location_Summary",
+    "title": "工研院國內主要院區與功能詳解 (Domestic Campuses)",
+    "hierarchy": "ITRI > 全球據點 > 國內 > 總覽",
+    "category": "Location Summary",
+    "content": "工研院在台灣的各個院區皆有其獨特的技術定位與任務使命，形成完整的產業支援體系：\n\n1. 新竹總部（中興院區 & 光復院區）：位於新竹縣竹東鎮與新竹市，緊鄰科學園區與清交大。這裡是工研院的行政中樞與核心研發基地，涵蓋資通訊、電光、生醫、材化等跨領域尖端技術研發，是台灣半導體與高科技產業的發源地。\n\n2. 中部據點（中分院）：位於南投縣中興新村。專注於「智慧機械」與「溫室科技」研發，結合中部精機產業聚落優勢，推動農業科技（AgriTech）與智慧製造的升級。另設有台中產業服務辦公室，就近服務中部工具機與自行車產業。\n\n3. 南部據點（南分院 & 六甲院區）：位於台南市六甲區。此處是「雷射光谷」的核心，設有雷射積層製造（3D列印）試量產工廠，專注於雷射加工、微機電系統與綠色製程技術。\n\n4. 南臺灣創新園區 (STIR)：位於台南科技工業區（安南區），扮演南部產業轉型的孵化器，聚焦微系統、綠能與生技醫材。\n\n5. 沙崙綠能科技示範場域：位於台南歸仁高鐵特區，是國家級的綠能驗證中心。擁有完整的太陽能、風力發電、氫能與儲能系統測試場域，並與中研院、陽明交大形成綠能科技聚落。\n\n6. 高雄亞灣 5G AIoT 創新園區：位於高雄前鎮區。配合政府「大南方計畫」，專注於 5G 專網、人工智慧物聯網（AIoT）與沉浸式科技（AR/VR）的應用落地，協助高雄港區與傳統重工業進行數位轉型。\n\n7. 在地服務網絡：包括台北辦事處（鏈結中央政府）、地熱發電單一服務窗口、以及花蓮東部服務中心，確保研發能量能擴散至全台各地。"
+  },
+  {
+    "source": "ITRI_Location_Summary",
+    "title": "工研院海外五大辦公室任務與戰略詳解 (Global Offices)",
+    "hierarchy": "ITRI > 全球據點 > 國外 > 總覽",
+    "category": "Location Summary",
+    "content": "工研院的海外辦公室不僅是聯絡窗口，更是台灣科技外交與國際合作的戰略前哨：\n\n1. 北美公司 (ITRI International Inc.)：位於美國加州矽谷 (San Jose)。利用地緣優勢，積極鏈結矽谷創新生態系、創投 (VC) 與頂尖大學 (Stanford, Berkeley)。主要任務包括：孵化新創公司 (Startups)、延攬高階研發人才、以及促成台美前瞻技術的聯合研發 (如 AI、半導體)。\n\n2. 日本辦公室 (ITRI Japan Office)：成立於1987年，位於東京。鑑於日本在材料科學與精密零組件的領先地位，該辦公室致力於搭建「台日科研合作平台」，促進雙邊技術移轉、智慧財產權 (IP) 合作，並引進日本企業來台投資研發。\n\n3. 歐洲辦公室 (ITRI Europe Office)：成立於1996年，位於德國柏林。作為工研院在歐洲的橋頭堡，它是台灣參與歐盟「展望歐洲 (Horizon Europe)」科研計畫的官方接觸點 (SME-NCP)。重點推動與德國 Fraunhofer 等機構在工業 4.0、綠色能源與生醫領域的深度合作。\n\n4. 東南亞辦公室 (ITRI Southeast Asia Office)：於2024年2月28日正式成立，位於泰國曼谷。因應全球供應鏈重組與「新南向政策」，該辦公室旨在協助台商佈局東南亞市場，輸出台灣的「淨零排放技術」、「智慧製造解決方案」與「智慧醫療」，強化區域供應鏈韌性。\n\n5. 英國辦公室 (ITRI UK Office)：於2025年正式成立，位於倫敦。這是工研院擴展歐洲佈局的最新舉措。看重英國在基礎科學、量子科技與綠色金融的優勢，該辦公室致力於深化台英在化合物半導體、離岸風電與韌性通訊技術上的互補合作。"
+  }
+]
