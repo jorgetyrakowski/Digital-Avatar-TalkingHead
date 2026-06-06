@@ -1,24 +1,45 @@
 #!/bin/bash
-# Start vLLM with NVFP4 model on Jetson Thor
-# Usage: ./start_vllm_nvfp4.sh [qwen3|gemma4]
+# Start vLLM with an NVFP4 model on Jetson Thor
+# Usage: ./start_vllm.sh [qwen3|gemma4]
 #
 # Key flags explained:
 #   --quantization modelopt       : Required for ModelOpt/NVFP4 format
 #   --moe-backend marlin          : Required for MoE FP4 expert layers
 #   VLLM_USE_FLASHINFER_MOE_FP4=0 : FlashInfer FP4 kernel broken on Jetson Thor
-#   --gpu-memory-utilization 0.50 : 0.72 was max before OOM; 0.50 sufficient for single-user POC
+#   --gpu-memory-utilization 0.37 : single-user POC; raise for more KV cache (0.72 was max before OOM)
 
-MODEL="${1:-qwen3}"
+MODEL="${1:-gemma4}"
 
-HF_CACHE=/home/acm/.cache/huggingface/hub
+HF_HOST="$HOME/.cache/huggingface"   # mounted into the container as /data/models/huggingface
 
 if [ "$MODEL" = "gemma4" ]; then
-    MODEL_ID="/data/models/huggingface/hub/models--bg-digitalservices--Gemma-4-26B-A4B-it-NVFP4/snapshots/a15dd6f161881b62db952303a5bfb7be118ed15e"
+    REPO_DIR="models--bg-digitalservices--Gemma-4-26B-A4B-it-NVFP4"
+    REPO_ID="bg-digitalservices/Gemma-4-26B-A4B-it-NVFP4"
     CONTAINER="ghcr.io/nvidia-ai-iot/vllm:gemma4-jetson-thor"
 else
-    MODEL_ID="/data/models/huggingface/hub/models--nvidia--Qwen3-30B-A3B-NVFP4/snapshots/2538ded2a4edb247b4d2b4a8ba24e44bd4c017c3"
+    REPO_DIR="models--nvidia--Qwen3-30B-A3B-NVFP4"
+    REPO_ID="nvidia/Qwen3-30B-A3B-NVFP4"
     CONTAINER="ghcr.io/nvidia-ai-iot/vllm:latest-jetson-thor"
 fi
+
+# Resolve the model snapshot wherever the HF cache put it (hub/ or cache root),
+# so the script works regardless of download method or revision hash.
+SNAPSHOT=""
+for base in "$HF_HOST/hub" "$HF_HOST"; do
+    SNAPSHOT=$(ls -d "$base/$REPO_DIR/snapshots/"* 2>/dev/null | head -1)
+    [ -n "$SNAPSHOT" ] && break
+done
+
+if [ -z "$SNAPSHOT" ]; then
+    echo "❌ Model weights not found in $HF_HOST"
+    echo "   Download them first:"
+    echo "     pip install -U \"huggingface_hub[cli]\""
+    echo "     huggingface-cli download $REPO_ID"
+    exit 1
+fi
+
+# Translate host path → container path
+MODEL_ID="/data/models/huggingface${SNAPSHOT#"$HF_HOST"}"
 
 echo "Starting vLLM with model: $MODEL_ID"
 echo "Container: $CONTAINER"
@@ -29,8 +50,8 @@ docker run --rm --name itri-vllm --runtime=nvidia \
   -e HF_HUB_DISABLE_XET=1 \
   -e HF_HUB_OFFLINE=1 \
   -e HF_HOME=/data/models/huggingface \
-  -v /home/acm/.cache/huggingface:/data/models/huggingface \
-  -v /home/acm/thor-vllm-cache:/root/.cache/vllm \
+  -v "$HF_HOST":/data/models/huggingface \
+  -v "$HOME/thor-vllm-cache":/root/.cache/vllm \
   -p 8000:8000 \
   "$CONTAINER" \
   python -m vllm.entrypoints.openai.api_server \

@@ -1,6 +1,13 @@
 # Digital Avatar TalkingHead
 
-A real-time, bilingual (English / Traditional Chinese) 3D talking avatar powered by a local RAG + LLM backend. Runs fully on an NVIDIA Jetson AGX Thor — speech-to-text, retrieval, inference, TTS and lip-sync — with answers spoken in under ~2 seconds. Optionally connects to a physical robot via ROS2.
+**A real-time, bilingual (English / Traditional Chinese) 3D digital avatar that answers questions about your organization — running entirely on a single NVIDIA Jetson AGX Thor.**
+
+This project builds on the excellent [**TalkingHead**](https://github.com/met4citizen/TalkingHead) library by Mika Suominen (MIT), which provides the 3D avatar rendering, animation and English lip-sync in the browser. On top of it, we built a complete edge-AI conversational system:
+
+- a **RAG + LLM backend** (ChromaDB + Gemma4-26B on vLLM) so the avatar answers from a real knowledge base — here, Taiwan's Industrial Technology Research Institute (ITRI)
+- **Mandarin speech and lip-sync** — TalkingHead has no Chinese module, so we generate visemes server-side (hanzi → pinyin → Oculus visemes) with exact per-character timing
+- **speech-to-text, three pluggable TTS engines, webcam vision, and optional ROS2 robot control**
+- everything tuned so the avatar **starts speaking ~1.5 s** after you finish talking
 
 ## 🎥 Demos
 
@@ -12,13 +19,13 @@ A real-time, bilingual (English / Traditional Chinese) 3D talking avatar powered
 
 ## Features
 
-- **Bilingual**: ask in English or Traditional Chinese — the avatar detects the language and answers in kind
-- **Chinese lip-sync**: TalkingHead has no Mandarin module, so visemes are generated server-side (hanzi → pinyin → Oculus visemes) with exact per-character timing
-- **Pluggable TTS, selectable per language**: `kokoro` (local, offline), `edge` (Microsoft cloud, free, Taiwan-accented Mandarin) or `fish` (Fish Audio cloud, custom voices)
-- **RAG**: answers are grounded in a ChromaDB knowledge base (ITRI corporate knowledge, 12 JSON files) with hybrid search — embeddings run in-process via fastembed
-- **Vision mode** 👁: the avatar can see the user through the webcam (SmolVLM2-256M, in-process) and adapts tone to the detected audience
-- **Robot integration** (optional): natural-language commands are forwarded to a ROS2 robot — see [Robot Integration](#-robot-integration)
-- **Fast**: first spoken words in ~1.5 s after the question (streamed sentence-by-sentence TTS)
+- **Bilingual**: ask by voice or text in English or Traditional Chinese — the system detects the language and answers in kind
+- **Mandarin lip-sync** (our extension to TalkingHead): server-side viseme generation with per-hanzi timing; numbers are converted to hanzi (1973 → 一九七三) so they are spoken *and* lip-synced
+- **Pluggable TTS, selectable per language**: `kokoro` (local/offline), `edge` (Microsoft cloud, free, Taiwan-accented Mandarin) or `fish` (Fish Audio cloud, custom voices) — cloud backends fall back to local automatically
+- **RAG**: hybrid search (vector + keyword) over a ChromaDB knowledge base; embeddings run in-process via fastembed — no extra server
+- **Vision mode** 👁: the avatar sees the user through the webcam (SmolVLM2-256M) and adapts its tone to the detected audience
+- **Robot integration** (optional): natural-language commands forwarded to a ROS2 robot, with visual object disambiguation — see [Robot Integration](#-robot-integration)
+- **Streaming pipeline**: the avatar speaks each sentence while the next ones are still being generated
 
 ## Pipeline
 
@@ -65,7 +72,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full pipeline including the robot
 | Role | Model | Runtime | Notes |
 |------|-------|---------|-------|
 | **LLM** | [Gemma4-26B-A4B](https://huggingface.co/bg-digitalservices/Gemma-4-26B-A4B-it-NVFP4) (MoE, NVFP4) | **vLLM** — NVIDIA Jetson Thor container, `--quantization modelopt --moe-backend marlin` | **~38 tok/s** decode measured on the Thor; 4096 ctx |
-| LLM (alt) | Qwen3-30B-A3B NVFP4 | same | `./start.sh qwen3` |
+| LLM (alt) | [Qwen3-30B-A3B](https://huggingface.co/nvidia/Qwen3-30B-A3B-NVFP4) NVFP4 | same | `./start.sh qwen3` |
 | Embeddings | intfloat/multilingual-e5-large | fastembed (ONNX, in-process) | no embedding server needed |
 | STT | Whisper tiny (int8) | faster-whisper, CPU | bilingual EN/ZH, ~0.5 s per utterance |
 | Vision | SmolVLM2-256M-Video-Instruct | transformers, in-process | one webcam frame every 5 s |
@@ -74,35 +81,88 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full pipeline including the robot
 
 The NVFP4 MoE quantization is what makes a 26B-parameter model interactive on the Jetson: only ~4B parameters are active per token, decoded at ~38 tok/s — faster than the avatar speaks.
 
-## Requirements
+## Installation
 
-- NVIDIA Jetson AGX Thor (128 GB unified memory)
-- Docker with the NVIDIA runtime
-- Conda (miniforge recommended)
-- vLLM Docker image from NVIDIA (`ghcr.io/nvidia-ai-iot/vllm:gemma4-jetson-thor`)
-- The model weights available locally in the HuggingFace cache (see `scripts/start_vllm.sh`)
-- *(optional)* Fish Audio API key — only if you select the `fish` TTS backend
+### Prerequisites
 
-## Setup (first time only)
+| Requirement | Notes |
+|-------------|-------|
+| NVIDIA Jetson AGX Thor | 128 GB unified memory, JetPack with Docker + NVIDIA runtime |
+| [Miniforge / Conda](https://github.com/conda-forge/miniforge) | for the two Python environments |
+| `openssl`, `curl`, `tmux` | usually preinstalled |
+| *(optional)* Fish Audio API key | only for the `fish` TTS backend |
+
+### 1. Clone
 
 ```bash
-# 1. Clone and enter the repo
 git clone <repo-url>
 cd Digital-Avatar-TalkingHead
+```
 
-# 2. Conda envs + HTTPS certificate + cloudflared (one script)
+### 2. Create the Python environments
+
+The project uses **two conda environments** — one for the LLM/RAG backend, one for the avatar server (they have conflicting dependency trees, e.g. onnxruntime vs torch):
+
+```bash
 bash setup.sh
+```
 
-# 3. Configure
+`setup.sh` does four things; if you prefer to run them manually:
+
+```bash
+# 2a. LLM + RAG environment
+conda create -n itri-llm python=3.12 -y
+conda activate itri-llm
+pip install -r llm/requirements.txt
+
+# 2b. Avatar server environment (STT, TTS, lip-sync, vision)
+conda create -n itri-talkinghead python=3.12 -y
+conda activate itri-talkinghead
+pip install -r avatar/requirements.txt
+
+# 2c. Self-signed HTTPS certificate (browsers require HTTPS for the microphone)
+mkdir -p ssl
+openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
+    -keyout ssl/key.pem -out ssl/cert.pem -subj "/CN=digital-avatar"
+
+# 2d. cloudflared — optional, only for the public tunnel URL
+mkdir -p bin
+curl -fL -o bin/cloudflared \
+    https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64
+chmod +x bin/cloudflared
+```
+
+### 3. Download the LLM weights and vLLM image
+
+```bash
+# Model weights → ~/.cache/huggingface (≈15 GB)
+pip install -U "huggingface_hub[cli]"
+huggingface-cli download bg-digitalservices/Gemma-4-26B-A4B-it-NVFP4
+
+# vLLM container for Jetson Thor
+docker pull ghcr.io/nvidia-ai-iot/vllm:gemma4-jetson-thor
+```
+
+`scripts/start_vllm.sh` finds the weights automatically wherever the HF cache puts them.
+
+### 4. Configure
+
+```bash
 cp .env.example .env
-# defaults work out of the box; set FISH_API_KEY only for the fish TTS backend
+```
 
-# 4. Build the knowledge base
+The defaults work without any API key (local Kokoro TTS for English, free Edge TTS for Chinese). See [Configuration](#configuration-env) below for all options.
+
+### 5. Build the knowledge base
+
+```bash
 conda activate itri-llm
 cd llm && python -m rag.RAG_LLM_realtime --RAG_RELOAD && cd ..
 ```
 
-## Start / Stop
+This embeds the JSON files in `llm/knowledge/` into `chroma_db/`. To use your own knowledge, replace the JSONs and re-run.
+
+### 6. Start
 
 ```bash
 ./start.sh           # full stack with Gemma4 (default)
@@ -110,7 +170,7 @@ cd llm && python -m rag.RAG_LLM_realtime --RAG_RELOAD && cd ..
 ./stop.sh            # stop everything
 ```
 
-`./start.sh` launches the services in tmux and prints the URLs when ready:
+First start takes ~2 min while vLLM loads the model. The script launches everything in tmux and prints the URLs when ready:
 
 | Service | Port | tmux session |
 |---------|------|--------------|
@@ -119,14 +179,19 @@ cd llm && python -m rag.RAG_LLM_realtime --RAG_RELOAD && cd ..
 | Avatar WebSocket + frontend (HTTPS) | 8010 | `itri-avatar` |
 | Cloudflare tunnel (optional) | — | `cf-tunnel` |
 
-Open **`https://localhost:8010`** (same machine), **`https://<jetson-ip>:8010`** (LAN), or the **public `https://….trycloudflare.com` URL** printed at the end (any network — requires `ENABLE_TUNNEL=true`).
+Open **`https://localhost:8010`** (same machine), **`https://<jetson-ip>:8010`** (LAN), or the **public `https://….trycloudflare.com` URL** printed at the end (any network).
 
-> HTTPS is required for microphone access; accept the self-signed certificate warning once per device.
+> HTTPS uses the self-signed certificate — accept the browser warning once per device, then the microphone works.
 
-```bash
-tmux attach -t itri-llm      # Ctrl+B 0 = vLLM logs, Ctrl+B 1 = API logs
-tmux attach -t itri-avatar   # avatar server logs    (Ctrl+B D to detach)
-```
+### Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| Mic button does nothing | You must use **https** (not http) and accept the certificate warning |
+| "Model weights not found" | Run the `huggingface-cli download` from step 3 |
+| First answer is slow | Warm-up: models load lazily — ask a throwaway question first |
+| No public URL printed | Check `tmux attach -t cf-tunnel`; or set `ENABLE_TUNNEL=false` |
+| Logs | `tmux attach -t itri-llm` (Ctrl+B 0/1) · `tmux attach -t itri-avatar` · `Ctrl+B D` to detach |
 
 ## Configuration (`.env`)
 
@@ -199,17 +264,17 @@ User ──► Avatar LLM ──► [ROBOT: bring water bottle] detected
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full message flow.
 
-## Notes
+## License
 
-- `chroma_db/`, `ssl/` and `bin/` are generated locally (gitignored) — `setup.sh` creates them
-- Rebuild ChromaDB after changing the knowledge base: `cd llm && python -m rag.RAG_LLM_realtime --RAG_RELOAD`
-- vLLM runs in NVIDIA's Docker container — it is not installed via pip
-- The first request after startup is slower (model warm-up); warm up with a throwaway question before demos
+This project is released under the [MIT License](LICENSE).
+
+It vendors and depends on third-party components under their own licenses (TalkingHead — MIT, Three.js — MIT, Ready Player Me sample avatar, and others) — see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the complete list.
 
 ## Acknowledgements
 
-- [met4citizen/TalkingHead](https://github.com/met4citizen/talkinghead) — 3D avatar rendering and lip-sync engine
+- [met4citizen/TalkingHead](https://github.com/met4citizen/TalkingHead) by **Mika Suominen** — the 3D avatar engine this project is built on
 - [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) — local TTS
 - [Fish Audio](https://fish.audio) / [edge-tts](https://github.com/rany2/edge-tts) — cloud TTS backends
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper) — STT
 - NVIDIA Jetson AI Lab — vLLM container images for Jetson Thor
+- [ITRI](https://www.itri.org.tw) — Industrial Technology Research Institute, Taiwan, where this project was developed
