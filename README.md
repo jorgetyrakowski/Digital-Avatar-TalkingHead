@@ -42,6 +42,10 @@ This project builds on the excellent [**TalkingHead**](https://github.com/met4ci
 
 ## Pipeline
 
+<p align="center">
+  <img src="docs/pipeline.png" alt="System architecture: browser TalkingHead avatar → speech-to-text and vision/tone → LLM engine (vLLM Gemma 4 + RAG/ChromaDB) → voice & lip-sync → robot bridge" width="100%" />
+</p>
+
 ```
  🎤 voice ──► VAD (browser, AudioWorklet RMS) ──► WebSocket ──► Whisper tiny (STT, CPU int8)
                                                                      │ text
