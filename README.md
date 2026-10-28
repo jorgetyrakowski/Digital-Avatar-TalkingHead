@@ -13,6 +13,14 @@ This project builds on the excellent [**TalkingHead**](https://github.com/met4ci
 
 <table>
   <tr>
+    <td align="center" colspan="2">
+      <a href="https://youtu.be/4wzPRw94WY8">
+        <img src="https://img.youtube.com/vi/4wzPRw94WY8/maxresdefault.jpg" alt="Robot control by voice demo" />
+      </a>
+      <br/><b>▶️ Voice-controlled robot (ROS 2): "Move the Pringles from the table to the sofa"</b>
+    </td>
+  </tr>
+  <tr>
     <td align="center" width="50%">
       <a href="https://youtu.be/tHQHYcrDoNQ">
         <img src="https://img.youtube.com/vi/tHQHYcrDoNQ/maxresdefault.jpg" alt="English conversation demo" />
@@ -27,8 +35,6 @@ This project builds on the excellent [**TalkingHead**](https://github.com/met4ci
     </td>
   </tr>
 </table>
-
-🤖 *Robot integration demo: coming soon*
 
 ## Features
 
@@ -262,7 +268,7 @@ The first Chinese fragment is cut at the first comma so speech starts while the 
 
 The avatar can drive a physical robot: when the user asks for something physical ("bring me the water bottle", "go to the kitchen"), the LLM emits a `[ROBOT: …]` tag that the avatar server converts into a ROS2 message.
 
-🎥 **Demo**: *coming soon*
+🎥 **Demo**: [Voice-controlled robot (ROS 2) on YouTube](https://youtu.be/4wzPRw94WY8)
 
 ```
 User ──► Avatar LLM ──► [ROBOT: bring water bottle] detected
